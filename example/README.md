@@ -1,20 +1,3 @@
-A dart package that helps to implement basic states for [BLoC library](https://pub.dev/packages/bloc) to perform, load and fetch data.
-
-
-[![pub package](https://img.shields.io/pub/v/value_cubit.svg)](https://pub.dev/packages/value_cubit)
-[![Test](https://github.com/devobs/value_cubit/actions/workflows/test.yml/badge.svg)](https://github.com/devobs/value_cubit/actions/workflows/test.yml)
-[![codecov](https://codecov.io/gh/devobs/value_cubit/branch/main/graph/badge.svg)](https://codecov.io/gh/devobs/value_cubit)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-## Features
-
-* Provides all necessary states for data : init, waiting, value/no value and error states,
-* A `ValueCubit` class to simplify `Cubit` subclassing,
-* A `RefreshValueCubit` class like `ValueCubit` with refreshing capabilities,
-* Some helpers `perform` (an extension on `Cubit`) to emit intermediate states while an action is intended to update state : the same state is reemitted with attribute `refreshing` at `true`.
-
-## Usage
-
 ### Basic example
 
 ```dart
@@ -65,7 +48,7 @@ main() async {
 }
 ```
 
-If your cubit is only a getter with the need to refresh your cubit state, you can simplify the implementation `ValueCubit` with `RefreshValueCubit`.
+If your cubit is only a getter with the need of refreshing your cubit state, you can simplify the implementation `ValueCubit` with `RefreshValueCubit`.
 
 ```dart
 class CounterCubit extends RefreshValueCubit<int> {
@@ -87,7 +70,7 @@ Update your value (increment in our example) by calling `myCubit.refresh()`.
 
 ### With Flutter and [Flutter BLoC library](https://pub.dev/packages/flutter_bloc)
 
-This example shows how different value states from this library help developpers to show load step data widgets.
+This example show how different value states from this library help developper to show widgets based on load step data.
 
 ```dart
 class MyHomePage extends StatelessWidget {
@@ -150,9 +133,3 @@ class MyHomePage extends StatelessWidget {
   }
 }
 ```
-
-The whole code of this example is available in [example/flutter](example/flutter).
-
-## Feedback
-
-Please file any issues, bugs or feature requests as an issue on the [Github page](https://github.com/devobs/value_cubit/issues).
