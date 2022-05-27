@@ -7,16 +7,16 @@ class CounterCubitListener extends ValueCubit<int>
     with StreamInputCubitMixin<int, BaseState<int>> {
   CounterCubitListener(
       {required CounterCubit counterCubit, required bool variant}) {
-    var _ignoreMapError = false;
+    var ignoreMapError = false;
     listenRefreshStream(counterCubit.behaviorSubject, (state) async {
-      if (!_ignoreMapError && state is WithValueState<int> && state.value > 4) {
-        _ignoreMapError = true;
+      if (!ignoreMapError && state is WithValueState<int> && state.value > 4) {
+        ignoreMapError = true;
       }
 
       emitMappedState<int>(
           (from) => variant && from == 1 ? null : from + 1, state,
           refreshingWithCurrentState: !variant,
-          mapError: variant && !_ignoreMapError
+          mapError: variant && !ignoreMapError
               ? (errorState) {
                   return NoValueState(refreshing: errorState.refreshing);
                 }
@@ -31,30 +31,30 @@ class CounterCubitListener extends ValueCubit<int>
 }
 
 void main() {
-  late CounterCubit _counterCubit;
-  late CounterCubitListener _counterCubitListener;
-  late CounterCubitListener _counterCubitListener2;
+  late CounterCubit counterCubit;
+  late CounterCubitListener counterCubitListener;
+  late CounterCubitListener counterCubitListener2;
 
   setUp(() {
-    _counterCubit = CounterCubit();
-    _counterCubitListener =
-        CounterCubitListener(counterCubit: _counterCubit, variant: false);
-    _counterCubitListener2 =
-        CounterCubitListener(counterCubit: _counterCubit, variant: true);
+    counterCubit = CounterCubit();
+    counterCubitListener =
+        CounterCubitListener(counterCubit: counterCubit, variant: false);
+    counterCubitListener2 =
+        CounterCubitListener(counterCubit: counterCubit, variant: true);
   });
 
   tearDown(() async {
-    await _counterCubitListener2.close();
-    await _counterCubitListener.close();
-    await _counterCubit.close();
+    await counterCubitListener2.close();
+    await counterCubitListener.close();
+    await counterCubit.close();
   });
 
   test('with values incremented', () {
-    expect(_counterCubitListener.state, isA<InitState<int>>());
-    cubitStandardActions(_counterCubit);
+    expect(counterCubitListener.state, isA<InitState<int>>());
+    cubitStandardActions(counterCubit);
 
     expect(
-        _counterCubitListener.stream,
+        counterCubitListener.stream,
         emitsInOrder([
           isA<ValueState<int>>()
               .having((state) => state.refreshing, 'first value not refreshing',
@@ -144,11 +144,11 @@ void main() {
   });
 
   test('with values incremented and variant', () {
-    expect(_counterCubitListener2.state, isA<InitState<int>>());
-    cubitStandardActions(_counterCubit);
+    expect(counterCubitListener2.state, isA<InitState<int>>());
+    cubitStandardActions(counterCubit);
 
     expect(
-        _counterCubitListener2.stream,
+        counterCubitListener2.stream,
         emitsInOrder([
           isA<ValueState<int>>()
               .having((state) => state.refreshing, 'first value not refreshing',
@@ -220,14 +220,14 @@ void main() {
     expect(counterCubit2.state, isA<InitState<int>>());
 
     expect(
-      performOnIterable<String>([_counterCubit, counterCubit2], () async {
-        await _counterCubit.refresh();
+      performOnIterable<String>([counterCubit, counterCubit2], () async {
+        await counterCubit.refresh();
         await counterCubit2.refresh();
 
         return 'Success';
       }).then((res) {
-        return performOnIterable([_counterCubit, counterCubit2], () async {
-          await _counterCubit.refresh();
+        return performOnIterable([counterCubit, counterCubit2], () async {
+          await counterCubit.refresh();
 
           return res;
         });
@@ -236,7 +236,7 @@ void main() {
     );
 
     expect(
-        _counterCubit.stream,
+        counterCubit.stream,
         emitsInOrder([
           isA<ValueState<int>>()
               .having((state) => state.refreshing, 'first value not refreshing',
