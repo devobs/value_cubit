@@ -5,27 +5,27 @@ import 'package:value_cubit/value_cubit.dart';
 import 'cubit.dart';
 
 void main() {
-  late CounterCubit _counterCubit;
+  late CounterCubit counterCubit;
 
   setUp(() {
-    _counterCubit = CounterCubit();
+    counterCubit = CounterCubit();
   });
 
   tearDown(() async {
-    await _counterCubit.close();
+    await counterCubit.close();
   });
 
   test('with values incremented', () {
-    expect(_counterCubit.state, isA<InitState<int>>());
+    expect(counterCubit.state, isA<InitState<int>>());
 
-    cubitStandardActions(_counterCubit);
+    cubitStandardActions(counterCubit);
 
     // Ensure the current state is [WaitingState] instead of [InitState]
-    expect(_counterCubit.state, isNot(isA<InitState<int>>()));
-    expect(_counterCubit.state, isA<PendingState<int>>());
+    expect(counterCubit.state, isNot(isA<InitState<int>>()));
+    expect(counterCubit.state, isA<PendingState<int>>());
 
     expect(
-        _counterCubit.stream,
+        counterCubit.stream,
         emitsInOrder([
           isA<ValueState<int>>()
               .having((state) => state.refreshing, 'first value not refreshing',
@@ -159,15 +159,15 @@ void main() {
   });
 
   test('visitor', () {
-    const _visitor = _TestStateVisitor();
+    const visitor = _TestStateVisitor();
 
-    expect(const InitState().accept(_visitor), 1);
-    expect(const PendingState().accept(_visitor), 4);
-    expect(const NoValueState().accept(_visitor), 2);
-    expect(const ValueState(0).accept(_visitor), 3);
+    expect(const InitState().accept(visitor), 1);
+    expect(const PendingState().accept(visitor), 4);
+    expect(const NoValueState().accept(visitor), 2);
+    expect(const ValueState(0).accept(visitor), 3);
     expect(
         ErrorState(previousState: const InitState(), error: 'Error')
-            .accept(_visitor),
+            .accept(visitor),
         0);
   });
 }

@@ -74,7 +74,7 @@ This example show how different value states from this library help developper t
 
 ```dart
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
