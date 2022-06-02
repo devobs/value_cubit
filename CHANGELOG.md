@@ -1,5 +1,6 @@
 ## 1.1.1
 
+* Sanitize emitMappedState parameters
 
 ## 1.1.0
 
