@@ -98,6 +98,11 @@ class _MappedStateVisitor<F, T> implements StateVisitor<BaseState<T>, F> {
 
   @override
   BaseState<T> visitValueState(ValueState<F> state) {
+    final currentStateRefreshing = _returnCurrentStateRefreshing(state);
+    if (currentStateRefreshing != null) {
+      return currentStateRefreshing;
+    }
+
     final mapped = mapValue(state.value);
 
     if (mapped == null) {

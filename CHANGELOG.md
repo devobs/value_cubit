@@ -1,6 +1,7 @@
 ## 1.1.0
 
 * Upgrade depedencies to Flutter 3.0.1
+* `emitMappedState` on ValueState
 
 ## 1.0.1
 
