@@ -12,7 +12,8 @@ extension StateAndStream<T> on Cubit<T> {
   Stream<T> get behaviorSubject => Stream.value(state).followedBy(stream);
 }
 
-typedef VoidMapperType<T> = BaseState<T>? Function(bool refreshing);
+typedef WaitingMapperType<T> = BaseState<T>? Function();
+typedef RefreshingyMapperType<T> = BaseState<T>? Function(bool refreshing);
 typedef ErrorMapperType<T, F> = BaseState<T>? Function(
     ErrorState<F> errorState);
 
@@ -43,22 +44,22 @@ mixin StreamInputCubitMixin<T, EVENT> on ValueCubit<T> {
   /// value), then the cubit emit the current state refreshing if original
   /// stream emit a refreshing state. Else, the refreshing is mapped from
   /// original stream.
-  /// [mapInit], [mapWaiting], [mapNoValue] and [mapError] override the default
+  /// [mapInit], [mapPending], [mapNoValue] and [mapError] override the default
   /// behavior of the mapper.
   void emitMappedState<F>(
     T? Function(F from) map,
     BaseState<F> fromState, {
     bool refreshingWithCurrentState = true,
-    VoidMapperType<T>? mapInit,
-    VoidMapperType<T>? mapWaiting,
-    VoidMapperType<T>? mapNoValue,
+    WaitingMapperType<T>? mapInit,
+    WaitingMapperType<T>? mapPending,
+    RefreshingyMapperType<T>? mapNoValue,
     ErrorMapperType<T, F>? mapError,
   }) {
     emit(fromState.accept<BaseState<T>>(_MappedStateVisitor<F, T>(
       map,
       currentState: refreshingWithCurrentState ? state : null,
       mapInit: mapInit,
-      mapPending: mapWaiting,
+      mapPending: mapPending,
       mapNoValue: mapNoValue,
       mapError: mapError,
     )));
@@ -74,9 +75,9 @@ class _MappedStateVisitor<F, T> implements StateVisitor<BaseState<T>, F> {
 
   final BaseState<T>? currentState;
 
-  final VoidMapperType<T>? mapInit;
-  final VoidMapperType<T>? mapPending;
-  final VoidMapperType<T>? mapNoValue;
+  final WaitingMapperType<T>? mapInit;
+  final WaitingMapperType<T>? mapPending;
+  final RefreshingyMapperType<T>? mapNoValue;
   final ErrorMapperType<T, F>? mapError;
 
   _MappedStateVisitor(
@@ -90,11 +91,11 @@ class _MappedStateVisitor<F, T> implements StateVisitor<BaseState<T>, F> {
 
   @override
   BaseState<T> visitInitState(InitState<F> state) =>
-      _applyMap(mapInit, state) ?? InitState<T>();
+      _applyMap((_) => mapInit?.call(), state) ?? InitState<T>();
 
   @override
   BaseState<T> visitPendingState(PendingState<F> state) =>
-      _applyMap(mapPending, state) ?? PendingState<T>();
+      _applyMap((_) => mapPending?.call(), state) ?? PendingState<T>();
 
   @override
   BaseState<T> visitValueState(ValueState<F> state) {
@@ -150,7 +151,8 @@ class _MappedStateVisitor<F, T> implements StateVisitor<BaseState<T>, F> {
           currentState!.mayRefreshing()
           : null;
 
-  BaseState<T>? _applyMap(VoidMapperType<T>? mapper, BaseState<F> state) {
+  BaseState<T>? _applyMap(
+      RefreshingyMapperType<T>? mapper, BaseState<F> state) {
     if (mapper != null) {
       return mapper(state is ReadyState<F> && state.refreshing);
     }
