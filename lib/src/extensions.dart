@@ -3,7 +3,20 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:stream_transform/stream_transform.dart';
-import 'package:value_cubit/value_cubit.dart';
+
+import 'cubit.dart';
+import 'states.dart';
+
+/// Shortcut to use [RefreshActivationVisitor].
+extension RefreshingExtensions<T> on BaseState<T> {
+  /// Copy the actual object and according to the state can enable refreshing
+  BaseState<T> mayRefreshing() =>
+      accept(RefreshActivationVisitor<T>(mayRefreshing: true));
+
+  /// Copy the actual object and according to the state can disable refreshing
+  BaseState<T> mayNotRefreshing() =>
+      accept(RefreshActivationVisitor<T>(mayRefreshing: false));
+}
 
 /// Extensions for cubit to
 extension StateAndStream<T> on Cubit<T> {

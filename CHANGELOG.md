@@ -1,5 +1,6 @@
 ## 1.1.2
 
+* Simplify BaseState
 
 ## 1.1.1
 

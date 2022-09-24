@@ -1,14 +1,10 @@
+part 'states_visitor.dart';
+
 /// Base class for handling value states.
 abstract class BaseState<T> {
   const BaseState();
 
-  /// Copy the actual object and according to the state can enable refreshing
-  BaseState<T> mayRefreshing();
-
-  /// Copy the actual object and according to the state can disable refreshing
-  BaseState<T> mayNotRefreshing();
-
-  /// Visitor pattern to enhance class capabilities
+  /// Visitor pattern to safely enhance class capabilities
   R accept<R>(StateVisitor<R, T> visitor);
 }
 
@@ -17,20 +13,12 @@ abstract class BaseState<T> {
 /// a user is disconnected.
 abstract class WaitingState<T> extends BaseState<T> {
   const WaitingState();
-
-  @override
-  WaitingState<T> mayRefreshing() => this;
-  @override
-  WaitingState<T> mayNotRefreshing() => this;
 }
 
 /// Initial state before any processing. If all has been intialized and
 /// the action to get the value is started, then emit a [WaitingState]
 class InitState<T> extends WaitingState<T> {
   const InitState();
-
-  @override
-  WaitingState<T> mayRefreshing() => PendingState<T>();
 
   @override
   R accept<R>(StateVisitor<R, T> visitor) => visitor.visitInitState(this);
@@ -87,11 +75,6 @@ class NoValueState<T> extends ReadyState<T> {
   final bool refreshing;
 
   @override
-  NoValueState<T> mayRefreshing() => NoValueState<T>(refreshing: true);
-  @override
-  NoValueState<T> mayNotRefreshing() => NoValueState<T>(refreshing: false);
-
-  @override
   R accept<R>(StateVisitor<R, T> visitor) => visitor.visitNoValueState(this);
 
   @override
@@ -127,11 +110,6 @@ class ValueState<T> extends ReadyState<T> implements WithValueState<T> {
   final bool refreshing;
 
   @override
-  ValueState<T> mayRefreshing() => ValueState<T>(value, refreshing: true);
-  @override
-  ValueState<T> mayNotRefreshing() => ValueState<T>(value, refreshing: false);
-
-  @override
   R accept<R>(StateVisitor<R, T> visitor) => visitor.visitValueState(this);
 
   @override
@@ -145,7 +123,7 @@ class ValueState<T> extends ReadyState<T> implements WithValueState<T> {
   int get hashCode => Object.hash(refreshing, value);
 }
 
-/// State for error (maybe linked with a [ValueState] or not)
+/// State for error (may be linked with a [ValueState] or not)
 abstract class ErrorState<T> extends ReadyState<T> {
   factory ErrorState(
       {required BaseState<T> previousState,
@@ -154,13 +132,13 @@ abstract class ErrorState<T> extends ReadyState<T> {
       bool refreshing = false}) {
     final stateBeforeError = _consumePreviousErrors<T>(previousState);
     if (stateBeforeError is ValueState<T>) {
-      return ErrorWithPreviousValue._(
+      return ErrorWithPreviousValue<T>._(
           stateBeforeError: stateBeforeError,
           error: error,
           stackTrace: stackTrace,
           refreshing: refreshing);
     }
-    return ErrorWithoutPreviousValue._(
+    return ErrorWithoutPreviousValue<T>._(
         stateBeforeError: stateBeforeError,
         error: error,
         stackTrace: stackTrace,
@@ -193,7 +171,7 @@ abstract class ErrorState<T> extends ReadyState<T> {
   static BaseState<T> _consumePreviousErrors<T>(BaseState<T> state) =>
       state is ErrorState<T>
           ? _consumePreviousErrors<T>(state.stateBeforeError)
-          : state.mayNotRefreshing();
+          : state.accept(RefreshActivationVisitor<T>(mayRefreshing: false));
 
   @override
   final bool refreshing;
@@ -227,20 +205,6 @@ class ErrorWithoutPreviousValue<T> extends ErrorState<T> {
             stackTrace: stackTrace,
             stateBeforeError: stateBeforeError,
             refreshing: refreshing);
-
-  @override
-  ErrorWithoutPreviousValue<T> mayRefreshing() => ErrorWithoutPreviousValue._(
-      stateBeforeError: stateBeforeError,
-      error: error,
-      stackTrace: stackTrace,
-      refreshing: true);
-  @override
-  ErrorWithoutPreviousValue<T> mayNotRefreshing() =>
-      ErrorWithoutPreviousValue._(
-          stateBeforeError: stateBeforeError,
-          error: error,
-          stackTrace: stackTrace,
-          refreshing: false);
 }
 
 /// An error with a [ValueState] as previous state
@@ -262,19 +226,6 @@ class ErrorWithPreviousValue<T> extends ErrorState<T>
 
   @override
   T get value => stateBeforeError.value;
-
-  @override
-  ErrorWithPreviousValue<T> mayRefreshing() => ErrorWithPreviousValue._(
-      stateBeforeError: stateBeforeError,
-      error: error,
-      stackTrace: stackTrace,
-      refreshing: true);
-  @override
-  ErrorWithPreviousValue<T> mayNotRefreshing() => ErrorWithPreviousValue._(
-      stateBeforeError: stateBeforeError,
-      error: error,
-      stackTrace: stackTrace,
-      refreshing: false);
 }
 
 /// Visitor base class to enhance states capabilities

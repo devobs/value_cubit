@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:synchronized/synchronized.dart';
-import 'package:value_cubit/value_cubit.dart';
 
+import 'extensions.dart';
 import 'states.dart';
 
 /// Shortbut to user [BaseState] with [Cubit]
