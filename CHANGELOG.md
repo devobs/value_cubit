@@ -1,6 +1,7 @@
 ## 1.1.2
 
 * Simplify BaseState
+* More understable example messages
 
 ## 1.1.1
 
