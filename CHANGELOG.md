@@ -1,5 +1,6 @@
 ## 1.1.6
 
+* Update README exemple
 
 ## 1.1.5
 
