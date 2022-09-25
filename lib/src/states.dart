@@ -125,12 +125,14 @@ class ValueState<T> extends ReadyState<T> implements WithValueState<T> {
 
 /// State for error (may be linked with a [ValueState] or not)
 abstract class ErrorState<T> extends ReadyState<T> {
-  factory ErrorState(
-      {required BaseState<T> previousState,
-      required Object error,
-      StackTrace? stackTrace,
-      bool refreshing = false}) {
+  factory ErrorState({
+    required BaseState<T> previousState,
+    required Object error,
+    StackTrace? stackTrace,
+    bool refreshing = false,
+  }) {
     final stateBeforeError = _consumePreviousErrors<T>(previousState);
+
     if (stateBeforeError is ValueState<T>) {
       return ErrorWithPreviousValue<T>._(
           stateBeforeError: stateBeforeError,
@@ -138,6 +140,7 @@ abstract class ErrorState<T> extends ReadyState<T> {
           stackTrace: stackTrace,
           refreshing: refreshing);
     }
+
     return ErrorWithoutPreviousValue<T>._(
         stateBeforeError: stateBeforeError,
         error: error,
@@ -145,11 +148,12 @@ abstract class ErrorState<T> extends ReadyState<T> {
         refreshing: refreshing);
   }
 
-  const ErrorState._(
-      {required this.error,
-      required this.stackTrace,
-      required this.stateBeforeError,
-      required this.refreshing});
+  const ErrorState._({
+    required this.error,
+    required this.stackTrace,
+    required this.stateBeforeError,
+    required this.refreshing,
+  });
 
   /// Previous state that is not [ErrorState]. If several errors are
   /// triggered, they are also ignored.
@@ -195,12 +199,12 @@ abstract class ErrorState<T> extends ReadyState<T> {
 
 /// An error with a [ValueState] as previous state
 class ErrorWithoutPreviousValue<T> extends ErrorState<T> {
-  const ErrorWithoutPreviousValue._(
-      {required Object error,
-      required StackTrace? stackTrace,
-      required BaseState<T> stateBeforeError,
-      required bool refreshing})
-      : super._(
+  const ErrorWithoutPreviousValue._({
+    required Object error,
+    required StackTrace? stackTrace,
+    required BaseState<T> stateBeforeError,
+    required bool refreshing,
+  }) : super._(
             error: error,
             stackTrace: stackTrace,
             stateBeforeError: stateBeforeError,
@@ -210,12 +214,12 @@ class ErrorWithoutPreviousValue<T> extends ErrorState<T> {
 /// An error with a [ValueState] as previous state
 class ErrorWithPreviousValue<T> extends ErrorState<T>
     implements WithValueState<T> {
-  const ErrorWithPreviousValue._(
-      {required Object error,
-      required StackTrace? stackTrace,
-      required ValueState<T> stateBeforeError,
-      required bool refreshing})
-      : super._(
+  const ErrorWithPreviousValue._({
+    required Object error,
+    required StackTrace? stackTrace,
+    required ValueState<T> stateBeforeError,
+    required bool refreshing,
+  }) : super._(
             error: error,
             stackTrace: stackTrace,
             stateBeforeError: stateBeforeError,
