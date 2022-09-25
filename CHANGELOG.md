@@ -1,3 +1,7 @@
+## 1.1.5
+
+* Simplification of the example
+
 ## 1.1.4
 
 * Fix diagram images
