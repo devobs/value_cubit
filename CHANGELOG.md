@@ -2,6 +2,7 @@
 
 * Simplify BaseState
 * More understable example messages
+* States modelization
 
 ## 1.1.1
 

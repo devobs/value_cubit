@@ -153,6 +153,16 @@ class MyHomePage extends StatelessWidget {
 
 The whole code of this example is available in [example/flutter](example/flutter).
 
+## Models
+
+### State Diagram
+
+![](doc/state_diagram.png)
+
+### Class Diagram
+
+![](doc/class_diagram.png)
+
 ## Feedback
 
 Please file any issues, bugs or feature requests as an issue on the [Github page](https://github.com/devobs/value_cubit/issues).
