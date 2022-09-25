@@ -155,13 +155,13 @@ The whole code of this example is available in [example/flutter](example/flutter
 
 ## Models
 
-### State Diagram
+### State diagram
 
-![](doc/state_diagram.png)
+![State diagram](https://github.com/devobs/value_cubit/blob/main/doc/state_diagram.png?raw=true)
 
-### Class Diagram
+### Class diagram
 
-![](doc/class_diagram.png)
+![Class diagram](https://github.com/devobs/value_cubit/blob/main/doc/class_diagram.png?raw=true)
 
 ## Feedback
 

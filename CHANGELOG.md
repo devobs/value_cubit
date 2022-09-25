@@ -1,5 +1,6 @@
 ## 1.1.4
 
+* Fix diagram images
 
 ## 1.1.2
 
