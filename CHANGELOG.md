@@ -1,3 +1,6 @@
+## 1.1.6
+
+
 ## 1.1.5
 
 * Simplification of the example
