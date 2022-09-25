@@ -48,12 +48,10 @@ class MyHomePage extends StatelessWidget {
                       Text('Expected error.',
                           style: TextStyle(color: theme.errorColor)),
                     if (state is WithValueState<int>) ...[
-                      Builder(builder: (context) {
-                        if (state.hasError) {
-                          return const Text('Previous counter value :');
-                        }
-                        return const Text('Actual counter value :');
-                      }),
+                      if (state.hasError)
+                        const Text('Previous counter value :')
+                      else
+                        const Text('Actual counter value :'),
                       Text(
                         state.value.toString(),
                         style: theme.textTheme.headline4,

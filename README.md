@@ -95,7 +95,6 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const progressIndicator = CircularProgressIndicator();
     final theme = Theme.of(context);
 
     return BlocBuilder<CounterCubit, BaseState<int>>(builder: (context, state) {
@@ -110,19 +109,18 @@ class MyHomePage extends StatelessWidget {
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    // state is now smart casted in [ReadyState] with
-                    // `state is ReadyState<int>`:
-                    // [ReadyState.refreshing] and [ReadyState.hasError]
-                    // are reachable.
                     if (state.refreshing) const LinearProgressIndicator(),
                     const Spacer(),
                     if (state.hasError)
                       Text('Expected error.',
                           style: TextStyle(color: theme.errorColor)),
                     if (state is WithValueState<int>) ...[
-                      // Deeper smart cast in [WithValueState],
-                      // [WithValueState.value] is reachable.
-                      const Text('Actual counter value :'),
+                      Builder(builder: (context) {
+                        if (state.hasError) {
+                          return const Text('Previous counter value :');
+                        }
+                        return const Text('Actual counter value :');
+                      }),
                       Text(
                         state.value.toString(),
                         style: theme.textTheme.headline4,
@@ -132,7 +130,7 @@ class MyHomePage extends StatelessWidget {
                     const Spacer(),
                   ],
                 )
-              : const Center(child: progressIndicator),
+              : const Center(child: CircularProgressIndicator()),
         ),
         floatingActionButton: state is! ReadyState<int>
             ? null
@@ -142,8 +140,10 @@ class MyHomePage extends StatelessWidget {
                     : context.read<CounterCubit>().increment,
                 tooltip: 'Increment',
                 child: state.refreshing
-                    ? const SizedBox.square(
-                        dimension: 20, child: progressIndicator)
+                    ? SizedBox.square(
+                        dimension: 20,
+                        child: CircularProgressIndicator(
+                            color: theme.colorScheme.onPrimary))
                     : const Icon(Icons.refresh)),
       );
     });
