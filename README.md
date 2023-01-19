@@ -1,5 +1,7 @@
 A dart package that helps to implement basic states for [BLoC library](https://pub.dev/packages/bloc) to perform, load and fetch data.
 
+/!\ This repository is now deprecated and has been transfered in https://github.com/devobs/value_state.
+
 
 [![pub package](https://img.shields.io/pub/v/value_cubit.svg)](https://pub.dev/packages/value_cubit)
 [![Test](https://github.com/devobs/value_cubit/actions/workflows/test.yml/badge.svg)](https://github.com/devobs/value_cubit/actions/workflows/test.yml)
